@@ -110,7 +110,7 @@ nlsplot(df_top, model=3, xlab = "N dose [kg ha-1]", ylab = "top yield [t ha-1]")
 install.packages("rcompanion") # quite long installation, 5 minutes
 library(rcompanion) # for plot part
 
-# Alfa grain
+# Alfa / grain ------------------------------------------------------------
 
 fit.lm    = lm(gyield ~ dose, data=alfa) # Find reasonable initial values for parameters
 
@@ -139,7 +139,7 @@ plotPredy(data  = alfa,
           model = model_alfag,
           main  = "",
           xlab  = expression("N dose [ kg "~ha^-1~"]"),
-          ylab  = expression("top yield [ t "~ha^-1~"]"),
+          ylab  = expression("Grain Yield [ t "~ha^-1~"]"),
           xaxt  = "n",
           cex   = .9, # velikost bodu
           cex.lab= 1.5, # velikost popisku osy
@@ -150,10 +150,188 @@ plotPredy(data  = alfa,
 axis(1, at = alfa$dose, labels = alfa$dose, 
      las = 1, cex.axis = 1.3, family = "Times")
 #text(40,33, "y = 17.4037+0.0639(x-122.2971)", col = "blue", cex=0.9)
-mtext("y = 6.72+0.00907(x-46)", side = 3, line = 1,
+mtext("y = 6.659+0.014(x-44.592)", side = 3, line = 1,
       outer = FALSE, cex = 1.5, col = "blue", family = "Times")
 
-dev.copy(device = png, filename = 'plots/linplat_alfa.png', 
+dev.copy(device = png, filename = 'plots/linplat_alfa_grain.png', 
          width = 600, height = 400) 
 dev.off()
 
+# Alfa / straw ------------------------------------------------------------
+
+fit.lm    = lm(syield ~ dose, data=alfa) # Find reasonable initial values for parameters
+
+a.ini     = fit.lm$coefficients[1] # fixed
+b.ini     = fit.lm$coefficients[2] # fixed
+clx.ini   = mean(alfa$dose)
+
+#linplat function above
+
+model_alfas = nls(syield ~ linplat(dose, a, b, clx), # Find best fit parameters
+                  data = alfa,
+                  start = list(a   = a.ini,
+                               b   = b.ini,
+                               clx = clx.ini),
+                  trace = FALSE,
+                  nls.control(maxiter = 1000))
+
+summary(model_alfas)
+
+par(mar=c(4,5,3,2))
+plotPredy(data  = alfa,
+          x     = dose,
+          y     = syield,
+          model = model_alfas,
+          main  = "",
+          xlab  = expression("N dose [ kg "~ha^-1~"]"),
+          ylab  = expression("Straw Yield [ t "~ha^-1~"]"),
+          xaxt  = "n",
+          cex   = .9, # velikost bodu
+          cex.lab= 1.5, # velikost popisku osy
+          cex.axis=1.4, # velikost tick mark popisku
+          cex.main=1.5,
+          family = "Times")
+# axis(1, at = seq(0, 220, by = 10), las=2)
+axis(1, at = alfa$dose, labels = alfa$dose, 
+     las = 1, cex.axis = 1.3, family = "Times")
+#text(40,33, "y = 17.4037+0.0639(x-122.2971)", col = "blue", cex=0.9)
+mtext("y = 3.967+0.012(x-66.433)", side = 3, line = 1,
+      outer = FALSE, cex = 1.5, col = "blue", family = "Times")
+
+dev.copy(device = png, filename = 'plots/linplat_alfa_straw.png', 
+         width = 600, height = 400) 
+dev.off()
+
+# Potato / grain ------------------------------------------------------------
+
+fit.lm    = lm(gyield ~ dose, data=pota) # Find reasonable initial values for parameters
+
+a.ini     = fit.lm$coefficients[1] # fixed
+b.ini     = fit.lm$coefficients[2] # fixed
+clx.ini   = mean(pota$dose)
+
+# linplat function above
+
+model_potag = nls(gyield ~ linplat(dose, a, b, clx), # Find best fit parameters
+                  data = pota,
+                  start = list(a   = a.ini,
+                               b   = b.ini,
+                               clx = clx.ini),
+                  trace = FALSE,
+                  nls.control(maxiter = 1000))
+
+summary(model_potag)
+
+par(mar=c(4,5,3,2))
+plotPredy(data  = pota,
+          x     = dose,
+          y     = gyield,
+          model = model_potag,
+          main  = "",
+          xlab  = expression("N dose [ kg "~ha^-1~"]"),
+          ylab  = expression("Grain Yield [ t "~ha^-1~"]"),
+          xaxt  = "n",
+          cex   = .9, # velikost bodu
+          cex.lab= 1.5, # velikost popisku osy
+          cex.axis=1.4, # velikost tick mark popisku
+          cex.main=1.5,
+          family = "Times")
+# axis(1, at = seq(0, 220, by = 10), las=2)
+axis(1, at = pota$dose, labels = pota$dose, 
+     las = 1, cex.axis = 1.3, family = "Times")
+#text(40,33, "y = 17.4037+0.0639(x-122.2971)", col = "blue", cex=0.9)
+mtext("y = 4.744+0.033(x-66.365)", side = 3, line = 1,
+      outer = FALSE, cex = 1.5, col = "blue", family = "Times")
+
+dev.copy(device = png, filename = 'plots/linplat_pota_grain.png', 
+         width = 600, height = 400) 
+dev.off()
+
+# Potato / straw ------------------------------------------------------------
+
+fit.lm    = lm(syield ~ dose, data=pota) # Find reasonable initial values for parameters
+
+a.ini     = fit.lm$coefficients[1] # fixed
+b.ini     = fit.lm$coefficients[2] # fixed
+clx.ini   = mean(pota$dose)
+
+# linplat function above
+
+model_potas = nls(syield ~ linplat(dose, a, b, clx), # Find best fit parameters
+                  data = pota,
+                  start = list(a   = a.ini,
+                               b   = b.ini,
+                               clx = clx.ini),
+                  trace = FALSE,
+                  nls.control(maxiter = 1000))
+
+summary(model_potas)
+
+par(mar=c(4,5,3,2))
+plotPredy(data  = pota,
+          x     = dose,
+          y     = syield,
+          model = model_potas,
+          main  = "",
+          xlab  = expression("N dose [ kg "~ha^-1~"]"),
+          ylab  = expression("Straw Yield [ t "~ha^-1~"]"),
+          xaxt  = "n",
+          cex   = .9, # velikost bodu
+          cex.lab= 1.5, # velikost popisku osy
+          cex.axis=1.4, # velikost tick mark popisku
+          cex.main=1.5,
+          family = "Times")
+# axis(1, at = seq(0, 220, by = 10), las=2)
+axis(1, at = pota$dose, labels = pota$dose, 
+     las = 1, cex.axis = 1.3, family = "Times")
+#text(40,33, "y = 17.4037+0.0639(x-122.2971)", col = "blue", cex=0.9)
+mtext("y = 3.054+0.034(x-71.403)", side = 3, line = 1,
+      outer = FALSE, cex = 1.5, col = "blue", family = "Times")
+
+dev.copy(device = png, filename = 'plots/linplat_pota_straw.png', 
+         width = 600, height = 400) 
+dev.off()
+
+# random effect -----------------------------------------------------------
+
+# install.packages("nlme")
+require(nlme)
+
+fit.lm    = lm(gyield ~ dose, data=alfa) # Find reasonable initial values for parameters
+
+a.ini     = fit.lm$coefficients[1] # fixed
+b.ini     = fit.lm$coefficients[2] # fixed
+clx.ini   = mean(alfa$dose)
+
+model_alfag_rand = nlme(gyield ~ linplat(dose, a, b, c),
+           random = a+b~1|year,
+           fixed = a+b+c~ 1,
+           data = alfa,
+           start = c(a=6.72, b=0.00907, c=46))
+
+summary(model_alfag_rand) # FURTHER it does not work :/
+
+par(mar=c(4,5,3,2))
+plotPredy(data  = alfa,
+          x     = dose,
+          y     = gyield,
+          model = model_alfag_rand,
+          main  = "",
+          xlab  = expression("N dose [ kg "~ha^-1~"]"),
+          ylab  = expression("Grain Yield [ t "~ha^-1~"]"),
+          xaxt  = "n",
+          cex   = .9, # velikost bodu
+          cex.lab= 1.5, # velikost popisku osy
+          cex.axis=1.4, # velikost tick mark popisku
+          cex.main=1.5,
+          family = "Times")
+# axis(1, at = seq(0, 220, by = 10), las=2)
+axis(1, at = alfa$dose, labels = alfa$dose, 
+     las = 1, cex.axis = 1.3, family = "Times")
+#text(40,33, "y = 17.4037+0.0639(x-122.2971)", col = "blue", cex=0.9)
+mtext("y = 6.659+0.014(x-44.592)", side = 3, line = 1,
+      outer = FALSE, cex = 1.5, col = "blue", family = "Times")
+
+dev.copy(device = png, filename = 'plots/linplat_alfa_grain.png', 
+         width = 600, height = 400) 
+dev.off()
