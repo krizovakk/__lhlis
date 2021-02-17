@@ -57,8 +57,8 @@ plot <- plot + theme(
 ggplot(alfa, aes(fert, gyield, colour=year))+
   geom_jitter(size = 3)+
   labs(title = "Alfalfa", colour = "", 
-       x = expression("N dose [ kg "~ha^-1~"]"), 
-       y = expression("grain yield [ t "~ha^-1~"]"))+
+       x = expression("N dose ( kg "~ha^-1~")"), 
+       y = expression("grain yield ( t "~ha^-1~")"))+
   theme_minimal(base_size = 20)+
   theme(text=element_text(family="Times New Roman", face="bold"))
  
@@ -69,8 +69,8 @@ ggplot(alfa, aes(fert, gyield, colour=year))+
 ggplot(pota, aes(fert, gyield, colour=year))+
   geom_jitter(size = 3)+
   labs(title = "Potato", colour = "", 
-       x = expression("N dose [ kg "~ha^-1~"]"), 
-       y = expression("grain yield [ t "~ha^-1~"]"))+
+       x = expression("N dose ( kg "~ha^-1~")"), 
+       y = expression("grain yield ( t "~ha^-1~")"))+
   theme_minimal(base_size = 20)+
   theme(text=element_text(family="Times New Roman", face="bold"))
 
@@ -98,8 +98,8 @@ nlsplot(df_alfag, model=3) #linear-plateau
 nlsfit(df_tube, model=3)
 nlsfit(df_top, model=3)
 
-nlsplot(df_tube, model=3, xlab = "N dose [kg ha-1]", ylab = "tuber yield [t ha-1]")
-nlsplot(df_top, model=3, xlab = "N dose [kg ha-1]", ylab = "top yield [t ha-1]")
+nlsplot(df_tube, model=3, xlab = "N dose (kg ha-1)", ylab = "tuber yield (t ha-1)")
+nlsplot(df_top, model=3, xlab = "N dose (kg ha-1)", ylab = "top yield (t ha-1)")
 
 
 
@@ -107,7 +107,7 @@ nlsplot(df_top, model=3, xlab = "N dose [kg ha-1]", ylab = "top yield [t ha-1]")
 
 ## https://rcompanion.org/handbook/I_11.html
 
-install.packages("rcompanion") # quite long installation, 5 minutes
+# install.packages("rcompanion") # quite long installation, 5 minutes
 library(rcompanion) # for plot part
 
 # Alfa / grain ------------------------------------------------------------
@@ -138,8 +138,8 @@ plotPredy(data  = alfa,
           y     = gyield,
           model = model_alfag,
           main  = "",
-          xlab  = expression("N dose [ kg "~ha^-1~"]"),
-          ylab  = expression("Grain Yield [ t "~ha^-1~"]"),
+          xlab  = expression("N dose ( kg "~ha^-1~")"),
+          ylab  = expression("Grain Yield ( t "~ha^-1~")"),
           xaxt  = "n",
           cex   = .9, # velikost bodu
           cex.lab= 1.5, # velikost popisku osy
@@ -183,8 +183,8 @@ plotPredy(data  = alfa,
           y     = syield,
           model = model_alfas,
           main  = "",
-          xlab  = expression("N dose [ kg "~ha^-1~"]"),
-          ylab  = expression("Straw Yield [ t "~ha^-1~"]"),
+          xlab  = expression("N dose ( kg "~ha^-1~")"),
+          ylab  = expression("Straw Yield ( t "~ha^-1~")"),
           xaxt  = "n",
           cex   = .9, # velikost bodu
           cex.lab= 1.5, # velikost popisku osy
@@ -228,8 +228,8 @@ plotPredy(data  = pota,
           y     = gyield,
           model = model_potag,
           main  = "",
-          xlab  = expression("N dose [ kg "~ha^-1~"]"),
-          ylab  = expression("Grain Yield [ t "~ha^-1~"]"),
+          xlab  = expression("N dose ( kg "~ha^-1~")"),
+          ylab  = expression("Grain Yield ( t "~ha^-1~")"),
           xaxt  = "n",
           cex   = .9, # velikost bodu
           cex.lab= 1.5, # velikost popisku osy
@@ -273,8 +273,8 @@ plotPredy(data  = pota,
           y     = syield,
           model = model_potas,
           main  = "",
-          xlab  = expression("N dose [ kg "~ha^-1~"]"),
-          ylab  = expression("Straw Yield [ t "~ha^-1~"]"),
+          xlab  = expression("N dose ( kg "~ha^-1~")"),
+          ylab  = expression("Straw Yield ( t "~ha^-1~")"),
           xaxt  = "n",
           cex   = .9, # velikost bodu
           cex.lab= 1.5, # velikost popisku osy
@@ -317,8 +317,8 @@ plotPredy(data  = alfa,
           y     = gyield,
           model = model_alfag_rand,
           main  = "",
-          xlab  = expression("N dose [ kg "~ha^-1~"]"),
-          ylab  = expression("Grain Yield [ t "~ha^-1~"]"),
+          xlab  = expression("N dose ( kg "~ha^-1~")"),
+          ylab  = expression("Grain Yield ( t "~ha^-1~")"),
           xaxt  = "n",
           cex   = .9, # velikost bodu
           cex.lab= 1.5, # velikost popisku osy
