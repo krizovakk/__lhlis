@@ -14,7 +14,7 @@ library(rcompanion) #plotPredy / manual linplat
 
 alfa <- read_excel("red/alfa.xlsx") 
 alfa$year <- as.factor(alfa$year)
-alfa$fert <- factor(alfa$fert, levels = c("Control", "N 40", "N 55", "N 60", "N 75"), 
+alfa$fert <- factor(alfa$fert, levels = c("Control", "N 40", "N 55", "N 60", "N 75"),
                     labels = c("0", "40", "55", "60", "75"))
 
 # potato as preceding crop
@@ -22,7 +22,7 @@ alfa$fert <- factor(alfa$fert, levels = c("Control", "N 40", "N 55", "N 60", "N 
 pota <- read_excel("red/potato.xlsx") 
 pota$year <- as.factor(pota$year)
 pota$fert <- factor(pota$fert, levels = c("Control", "N 40", "N 55", "N 60", "N 75"), 
-                    labels = c("0", "40", "55", "60", "75"))
+                    labels = c("0", "40", "55", "80", "95")) # doses corrected on request from 22/2/2021
 
 # Times New Roman import --------------------------------------------------
 
@@ -240,7 +240,7 @@ plotPredy(data  = pota,
 axis(1, at = pota$dose, labels = pota$dose, 
      las = 1, cex.axis = 1.3, family = "Times")
 #text(40,33, "y = 17.4037+0.0639(x-122.2971)", col = "blue", cex=0.9)
-mtext("y = 4.744+0.033(x-66.365)", side = 3, line = 1,
+mtext("y = 4.738+0.033(x-62.062)", side = 3, line = 1,
       outer = FALSE, cex = 1.5, col = "blue", family = "Times")
 
 dev.copy(device = png, filename = 'plots/linplat_pota_grain.png', 
@@ -248,6 +248,12 @@ dev.copy(device = png, filename = 'plots/linplat_pota_grain.png',
 dev.off()
 
 # Potato / straw ------------------------------------------------------------
+
+# remove year 1993, because straw yield is 0.000
+
+pota <- pota %>% 
+  filter(year %in% c("1983", "1984", "1990", "1992", "1999", "2001",
+                     "2002", "2008", "2010", "2011", "2017", "2019", "2020"))
 
 fit.lm    = lm(syield ~ dose, data=pota) # Find reasonable initial values for parameters
 
@@ -285,7 +291,7 @@ plotPredy(data  = pota,
 axis(1, at = pota$dose, labels = pota$dose, 
      las = 1, cex.axis = 1.3, family = "Times")
 #text(40,33, "y = 17.4037+0.0639(x-122.2971)", col = "blue", cex=0.9)
-mtext("y = 3.054+0.034(x-71.403)", side = 3, line = 1,
+mtext("y = 3.327+0.034(x-73.018)", side = 3, line = 1,
       outer = FALSE, cex = 1.5, col = "blue", family = "Times")
 
 dev.copy(device = png, filename = 'plots/linplat_pota_straw.png', 
