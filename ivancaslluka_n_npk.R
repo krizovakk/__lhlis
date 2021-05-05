@@ -17,12 +17,14 @@
 # install.packages("tidyverse")
 # install.packages("readxl")
 # install.packages("reshape2")
+#install.packages("minpack.lm") 
 # install.packages("extrafont")
 
 require(tidyverse) #zakladni balik  
 require(readxl) #nacitani excelovych tabulek
 require(reshape2) #prevod na long format
 require(easynls) #linplat model auto
+library(minpack.lm) # nlsLM = more reliable model - singular gradient solution (https://gradcylinder.org/linear-plateau/)
 library(rcompanion) #plotPredy / manual linplat
 library(extrafont)
 
@@ -91,32 +93,32 @@ ndose <- n %>%
                        ifelse(var == "N2", 80, 
                               ifelse(var == "N3", 120, 0))))
 
+# linplat = function(x, a, b, clx) # old concept function
+# {ifelse(x < clx, a + b * x,
+#         a + b * clx)}
+
 # Ivanovice
 
 ivanN <- ndose %>% 
   filter(loc == "Ivanovice")
 
-# ivan <- npkdose %>% 
-#   filter(loc == "Ivanovice") # switch for two different kinds of plots
+library(minpack.lm)
 
-fit.lm    = lm(yield ~ dose, data=ivanN) # Find reasonable initial values for parameters
+lp = function(x, a, b, c) {
+  if_else(condition = x < c,
+          true = a + b * x,
+          false = a + b * c)}
 
-a.ini     = fit.lm$coefficients[1] # fixed
-b.ini     = fit.lm$coefficients[2] # fixed
-clx.ini   = mean(ivanN$dose)
+ini_fit <- lm(data = ivanN, formula = yield ~ dose)
+ini_a <- ini_fit$coef[[1]]
+ini_b <- ini_fit$coef[[2]]
+ini_c <- mean(ivanN$dose)
 
-linplat = function(x, a, b, clx) # fixed, Define linear plateau function
-{ifelse(x < clx, a + b * x,
-        a + b * clx)}
-
-
-model_ivanN = nls(yield ~ linplat(dose, a, b, clx), # Find best fit parameters
-                data = ivanN,
-                start = list(a   = a.ini,
-                             b   = b.ini,
-                             clx = clx.ini),
-                trace = FALSE,
-                nls.control(maxiter = 1000))
+model_ivanN <<- nlsLM(
+  formula = yield ~ lp(dose, a, b, c),
+  data = ivanN,
+  start = list(a = ini_a, b = ini_c, c = ini_c)
+)
 
 summary(model_ivanN)
 
@@ -151,22 +153,16 @@ dev.off()
 caslN <- ndose %>% 
   filter(loc == "Caslav")
 
-# casl <- npkdose %>% 
-#   filter(loc == "Caslav") # switch for two different kinds of plots
+ini_fit <- lm(data = caslN, formula = yield ~ dose)
+ini_a <- ini_fit$coef[[1]]
+ini_b <- ini_fit$coef[[2]]
+ini_c <- mean(caslN$dose)
 
-fit.lm    = lm(yield ~ dose, data=caslN) # Find reasonable initial values for parameters
-
-a.ini     = fit.lm$coefficients[1] # fixed
-b.ini     = fit.lm$coefficients[2] # fixed
-clx.ini   = mean(caslN$dose)
-
-model_caslN = nls(yield ~ linplat(dose, a, b, clx), # Find best fit parameters
-                 data = caslN,
-                 start = list(a   = a.ini,
-                              b   = b.ini,
-                              clx = clx.ini),
-                 trace = FALSE,
-                 nls.control(maxiter = 1000))
+model_caslN <<- nlsLM(
+  formula = yield ~ lp(dose, a, b, c),
+  data = caslN,
+  start = list(a = ini_a, b = ini_c, c = ini_c)
+)
 
 summary(model_caslN)
 
@@ -175,7 +171,7 @@ plotPredy(data  = caslN,
           x     = dose,
           y     = yield,
           model = model_caslN,
-         # main  = "Caslav",
+          # main  = "Caslav",
           xlab  = expression("N dose ( kg "~ha^-1~")"),
           ylab  = expression("Grain Yield ( t "~ha^-1~")"),
           xaxt  = "n",
@@ -201,22 +197,17 @@ dev.off()
 lukaN <- ndose %>% 
   filter(loc == "Lukavec")
 
-# luka <- npkdose %>% 
-#   filter(loc == "Lukavec") # switch for two different kinds of plots
+ini_fit <- lm(data = lukaN, formula = yield ~ dose)
+ini_a <- ini_fit$coef[[1]]
+ini_b <- ini_fit$coef[[2]]
+ini_c <- mean(lukaN$dose)
 
-fit.lm    = lm(yield ~ dose, data=lukaN) # Find reasonable initial values for parameters
+model_lukaN <<- nlsLM(
+  formula = yield ~ lp(dose, a, b, c),
+  data = lukaN,
+  start = list(a = ini_a, b = ini_c, c = ini_c)
+)
 
-a.ini     = fit.lm$coefficients[1] # fixed
-b.ini     = fit.lm$coefficients[2] # fixed
-clx.ini   = mean(lukaN$dose)
-
-model_lukaN = nls(yield ~ linplat(dose, a, b, clx), # Find best fit parameters
-                 data = lukaN,
-                 start = list(a   = a.ini,
-                              b   = b.ini,
-                              clx = clx.ini),
-                 trace = FALSE,
-                 nls.control(maxiter = 1000))
 
 summary(model_lukaN)
 
@@ -247,6 +238,7 @@ dev.copy(device = png, filename = 'plots/lukavec_n.png',
 dev.off()
 
 
+
 # NPK ---------------------------------------------------------------------
 
 npkdose <- npk %>%
@@ -254,20 +246,10 @@ npkdose <- npk %>%
                               ifelse(var == "NPK2", 80,
                               ifelse(var == "NPK3", 120, 0))))
 
-#npkdose %>% drop_na(yield)
-
 # Ivanovice
 
 ivanNPK <- npkdose %>% 
   filter(loc == "Ivanovice")
-
-#install.packages("minpack.lm")
-library(minpack.lm)
-
-lp = function(x, a, b, c) {
-  if_else(condition = x < c,
-          true = a + b * x,
-          false = a + b * c)}
 
 ini_fit <- lm(data = ivanNPK, formula = yield ~ dose)
 ini_a <- ini_fit$coef[[1]]
@@ -489,5 +471,7 @@ mtext("y = 5.111+0.035(x-46.594)", side = 3, line = 1,                # data fet
 dev.copy(device = png, filename = 'plots/ivanovice_npk.png', 
          width = 600, height = 400) 
 dev.off()
+
+
 
 
