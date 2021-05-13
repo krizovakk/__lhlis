@@ -37,17 +37,10 @@ fonts()                       #vector of font family names
 # casl <- read_excel("red/weather.xlsx", sheet = 2) 
 # luka <- read_excel("red/weather.xlsx", sheet = 3) 
 
-n <- read_excel("red/N.xlsx", sheet = 4) # all three loc in one file
-
+n <- read_excel("red/N.xlsx", sheet = 5) # N+NPK in one file
 n$yield <- as.numeric(n$yield)
 n$year <- as.factor(n$year)
 n$loc <- as.factor(n$loc)
-
-npk <- read_excel("red/NPK.xlsx", sheet = 1) 
-
-npk$yield <- as.numeric(npk$yield)
-npk$year <- as.factor(npk$year)
-npk$loc <- as.factor(npk$loc)
 
 # EASY NLS / linplat model AUTO -------------------------------------------------------------
 
@@ -86,16 +79,12 @@ nlsplot(df_ivan, model=3, xlab = "Year", ylab = "Yield [t ha-1]")
 # install.packages("rcompanion") # quite long installation, 5 minutes
 library(rcompanion) # for plot part
 
-# N ------------------------------------------------------------
-
 ndose <- n %>% 
   mutate(dose = ifelse(var == "N1", 40, 
                        ifelse(var == "N2", 80, 
-                              ifelse(var == "N3", 120, 0))))
-
-# linplat = function(x, a, b, clx) # old concept function
-# {ifelse(x < clx, a + b * x,
-#         a + b * clx)}
+                              ifelse(var == "NPK3", 120,
+                                     ifelse(var == "NPK1", 40,
+                                            ifelse(var == "NPK2", 80, 0))))))
 
 # Ivanovice
 
@@ -141,7 +130,7 @@ title("Ivanovice", adj = 0, line = 1, cex.main = 1.3, family = "Times New Roman"
 axis(1, at = ivanN$dose, labels = ivanN$dose, 
      las = 1, cex.axis = 1.3, family = "Times New Roman")
 #text(40,33, "y = 17.4037+0.0639(x-122.2971)", col = "blue", cex=0.9)
-mtext("y = 5.111+0.035(x-46.594)", side = 3, line = 1,                # data fetched from model summary
+mtext("y = 5.111+0.035(x-49.980)", side = 3, line = 1,                # data fetched from model summary
       outer = FALSE, cex = 1.5, col = "blue", family = "Times New Roman")
 
 dev.copy(device = png, filename = 'plots/ivanovice_n.png', 
@@ -185,7 +174,7 @@ title("Caslav", adj = 0, line = 1, cex.main = 1.3, family = "Times New Roman")
 axis(1, at = caslN$dose, labels = caslN$dose, 
      las = 1, cex.axis = 1.3, family = "Times New Roman")
 #text(40,33, "y = 17.4037+0.0639(x-122.2971)", col = "blue", cex=0.9)
-mtext("y = 4.869+0.037(x-42.509)", side = 3, line = 1,
+mtext("y = 4.869+0.037(x-44.507)", side = 3, line = 1,
       outer = FALSE, cex = 1.5, col = "blue", family = "Times New Roman")
 
 dev.copy(device = png, filename = 'plots/caslav_n.png', 
@@ -230,154 +219,14 @@ title("Lukavec", adj = 0, line = 1, cex.main = 1.3, family = "Times New Roman")
 axis(1, at = lukaN$dose, labels = lukaN$dose, 
      las = 1, cex.axis = 1.3, family = "Times New Roman")
 #text(40,33, "y = 17.4037+0.0639(x-122.2971)", col = "blue", cex=0.9)
-mtext("y = 3.023+0.038(x-62.758)", side = 3, line = 1,
+mtext("y = 3.023+0.042(x-70.369)", side = 3, line = 1,
       outer = FALSE, cex = 1.5, col = "blue", family = "Times New Roman")
 
 dev.copy(device = png, filename = 'plots/lukavec_n.png', 
          width = 600, height = 400) 
 dev.off()
 
-
-
-# NPK ---------------------------------------------------------------------
-
-npkdose <- npk %>%
-  mutate(dose = ifelse(var == "NPK1", 40,
-                              ifelse(var == "NPK2", 80,
-                              ifelse(var == "NPK3", 120, 0))))
-
-# Ivanovice
-
-ivanNPK <- npkdose %>% 
-  filter(loc == "Ivanovice")
-
-ini_fit <- lm(data = ivanNPK, formula = yield ~ dose)
-ini_a <- ini_fit$coef[[1]]
-ini_b <- ini_fit$coef[[2]]
-ini_c <- mean(ivanNPK$dose)
-
-model_ivanNPK <<- nlsLM(
-  formula = yield ~ lp(dose, a, b, c),
-  data = ivanNPK,
-  start = list(a = ini_a, b = ini_c, c = ini_c)
-)
-
-summary(model_ivanNPK)
-
-par(mar=c(4,5,3,2))
-plotPredy(data  = ivanNPK,
-          x     = dose,
-          y     = yield,
-          model = model_ivanNPK,
-          # main  = "Ivanovice",
-          xlab  = expression("N dose (NPK) ( kg "~ha^-1~")"),
-          ylab  = expression("Grain Yield ( t "~ha^-1~")"),
-          xaxt  = "n",
-          cex   = .9, # velikost bodu
-          cex.lab= 1.5, # velikost popisku osy
-          cex.axis=1.4, # velikost tick mark popisku
-          cex.main=1.5,
-          family = "Times New Roman")
-title("Ivanovice", adj = 0, line = 1, cex.main = 1.3, family = "Times New Roman")
-# axis(1, at = seq(0, 220, by = 10), las=2)
-axis(1, at = ivanNPK$dose, labels = ivanNPK$dose, 
-     las = 1, cex.axis = 1.3, family = "Times New Roman")
-#text(40,33, "y = 17.4037+0.0639(x-122.2971)", col = "blue", cex=0.9)
-mtext("y = 5.105+0.036(x-51.474)", side = 3, line = 1,                # data fetched from model summary
-      outer = FALSE, cex = 1.5, col = "blue", family = "Times New Roman")
-
-dev.copy(device = png, filename = 'plots/ivanovice_npk.png', 
-         width = 600, height = 400) 
-dev.off()
-
-# Caslav
-
-caslNPK <- npkdose %>% 
-  filter(loc == "Caslav")
-
-ini_fit <- lm(data = caslNPK, formula = yield ~ dose)
-ini_a <- ini_fit$coef[[1]]
-ini_b <- ini_fit$coef[[2]]
-ini_c <- mean(caslNPK$dose)
-
-model_caslNPK <<- nlsLM(
-  formula = yield ~ lp(dose, a, b, c),
-  data = caslNPK,
-  start = list(a = ini_a, b = ini_c, c = ini_c)
-)
-
-summary(model_caslNPK)
-
-par(mar=c(4,5,3,2))
-plotPredy(data  = caslNPK,
-          x     = dose,
-          y     = yield,
-          model = model_caslNPK,
-          # main  = "Caslav",
-          xlab  = expression("N dose (NPK) ( kg "~ha^-1~")"),
-          ylab  = expression("Grain Yield ( t "~ha^-1~")"),
-          xaxt  = "n",
-          cex   = .9, # velikost bodu
-          cex.lab= 1.5, # velikost popisku osy
-          cex.axis=1.4, # velikost tick mark popisku
-          cex.main=1.5,
-          family = "Times New Roman")
-title("Caslav", adj = 0, line = 1, cex.main = 1.3, family = "Times New Roman")
-# axis(1, at = seq(0, 220, by = 10), las=2)
-axis(1, at = caslNPK$dose, labels = caslNPK$dose, 
-     las = 1, cex.axis = 1.3, family = "Times New Roman")
-#text(40,33, "y = 17.4037+0.0639(x-122.2971)", col = "blue", cex=0.9)
-mtext("y = 4.874+0.039(x-44.885)", side = 3, line = 1,
-      outer = FALSE, cex = 1.5, col = "blue", family = "Times New Roman")
-
-dev.copy(device = png, filename = 'plots/caslav_npk.png', 
-         width = 600, height = 400) 
-dev.off()
-
-# Lukavec
-
-lukaNPK <- npkdose %>% 
-  filter(loc == "Lukavec")
-
-ini_fit <- lm(data = lukaNPK, formula = yield ~ dose)
-ini_a <- ini_fit$coef[[1]]
-ini_b <- ini_fit$coef[[2]]
-ini_c <- mean(lukaNPK$dose)
-
-model_lukaNPK <<- nlsLM(
-  formula = yield ~ lp(dose, a, b, c),
-  data = lukaNPK,
-  start = list(a = ini_a, b = ini_c, c = ini_c)
-)
-
-summary(model_lukaNPK)
-
-par(mar=c(4,5,3,2))
-plotPredy(data  = lukaNPK,
-          x     = dose,
-          y     = yield,
-          model = model_lukaNPK,
-          #main  = "Lukavec",
-          xlab  = expression("N dose (NPK) ( kg "~ha^-1~")"),
-          ylab  = expression("Grain Yield ( t "~ha^-1~")"),
-          xaxt  = "n",
-          cex   = .9, # velikost bodu
-          cex.lab= 1.5, # velikost popisku osy
-          cex.axis=1.4, # velikost tick mark popisku
-          cex.main=1.5,
-          family = "Times New Roman")
-title("Lukavec", adj = 0, line = 1, cex.main = 1.3, family = "Times New Roman")
-# axis(1, at = seq(0, 220, by = 10), las=2)
-axis(1, at = lukaNPK$dose, labels = lukaNPK$dose, 
-     las = 1, cex.axis = 1.3, family = "Times New Roman")
-#text(40,33, "y = 17.4037+0.0639(x-122.2971)", col = "blue", cex=0.9)
-mtext("y = 3.119+0.044(x-71.975)", side = 3, line = 1,
-      outer = FALSE, cex = 1.5, col = "blue", family = "Times New Roman")
-
-dev.copy(device = png, filename = 'plots/lukavec_npk.png', 
-         width = 600, height = 400) 
-dev.off()
-
+# ================ END OF THE MAIN ANALYSIS ===============================
 
 # random effect -----------------------------------------------------------
 
