@@ -37,10 +37,11 @@ fonts()                       #vector of font family names
 # casl <- read_excel("red/weather.xlsx", sheet = 2) 
 # luka <- read_excel("red/weather.xlsx", sheet = 3) 
 
-n <- read_excel("red/N.xlsx", sheet = 5) # N+NPK in one file
-n$yield <- as.numeric(n$yield)
+n <- read_excel("red/N.xlsx", sheet = 1) # N+NPK in one file
+
 n$year <- as.factor(n$year)
 n$loc <- as.factor(n$loc)
+n$var <- as.factor(n$var)
 
 # EASY NLS / linplat model AUTO -------------------------------------------------------------
 
@@ -79,16 +80,9 @@ nlsplot(df_ivan, model=3, xlab = "Year", ylab = "Yield [t ha-1]")
 # install.packages("rcompanion") # quite long installation, 5 minutes
 library(rcompanion) # for plot part
 
-ndose <- n %>% 
-  mutate(dose = ifelse(var == "N1", 40, 
-                       ifelse(var == "N2", 80, 
-                              ifelse(var == "NPK3", 120,
-                                     ifelse(var == "NPK1", 40,
-                                            ifelse(var == "NPK2", 80, 0))))))
-
 # Ivanovice
 
-ivanN <- ndose %>% 
+ivanN <- n %>% 
   filter(loc == "Ivanovice")
 
 library(minpack.lm)
@@ -130,7 +124,7 @@ title("Ivanovice", adj = 0, line = 1, cex.main = 1.3, family = "Times New Roman"
 axis(1, at = ivanN$dose, labels = ivanN$dose, 
      las = 1, cex.axis = 1.3, family = "Times New Roman")
 #text(40,33, "y = 17.4037+0.0639(x-122.2971)", col = "blue", cex=0.9)
-mtext("y = 5.111+0.035(x-49.980)", side = 3, line = 1,                # data fetched from model summary
+mtext("y = 4.593+0.106(x-30.934)", side = 3, line = 1,                # data fetched from model summary
       outer = FALSE, cex = 1.5, col = "blue", family = "Times New Roman")
 
 dev.copy(device = png, filename = 'plots/ivanovice_n.png', 
@@ -139,7 +133,7 @@ dev.off()
 
 # Caslav
 
-caslN <- ndose %>% 
+caslN <- n %>% 
   filter(loc == "Caslav")
 
 ini_fit <- lm(data = caslN, formula = yield ~ dose)
@@ -174,7 +168,7 @@ title("Caslav", adj = 0, line = 1, cex.main = 1.3, family = "Times New Roman")
 axis(1, at = caslN$dose, labels = caslN$dose, 
      las = 1, cex.axis = 1.3, family = "Times New Roman")
 #text(40,33, "y = 17.4037+0.0639(x-122.2971)", col = "blue", cex=0.9)
-mtext("y = 4.869+0.037(x-44.507)", side = 3, line = 1,
+mtext("y = 4.210+0.077(x-32.034)", side = 3, line = 1,
       outer = FALSE, cex = 1.5, col = "blue", family = "Times New Roman")
 
 dev.copy(device = png, filename = 'plots/caslav_n.png', 
@@ -183,7 +177,7 @@ dev.off()
 
 # Lukavec
 
-lukaN <- ndose %>% 
+lukaN <- n %>% 
   filter(loc == "Lukavec")
 
 ini_fit <- lm(data = lukaN, formula = yield ~ dose)
@@ -219,7 +213,7 @@ title("Lukavec", adj = 0, line = 1, cex.main = 1.3, family = "Times New Roman")
 axis(1, at = lukaN$dose, labels = lukaN$dose, 
      las = 1, cex.axis = 1.3, family = "Times New Roman")
 #text(40,33, "y = 17.4037+0.0639(x-122.2971)", col = "blue", cex=0.9)
-mtext("y = 3.023+0.042(x-70.369)", side = 3, line = 1,
+mtext("y = 2.495+0.074(x-45.600)", side = 3, line = 1,
       outer = FALSE, cex = 1.5, col = "blue", family = "Times New Roman")
 
 dev.copy(device = png, filename = 'plots/lukavec_n.png', 
