@@ -17,7 +17,7 @@
 # install.packages("tidyverse")
 # install.packages("readxl")
 # install.packages("reshape2")
-#install.packages("minpack.lm") 
+# install.packages("minpack.lm")
 # install.packages("extrafont")
 
 require(tidyverse) #zakladni balik  
@@ -29,8 +29,11 @@ library(rcompanion) #plotPredy / manual linplat
 library(extrafont)
 
 font_import()
-loadfonts(device="win")       #Register fonts for Windows bitmap output
+yloadfonts(device="win")        #Register fonts for Windows bitmap output
 fonts()                       #vector of font family names
+
+
+windowsFonts(A = windowsFont("Times New Roman")) # https://statisticsglobe.com/change-font-of-plot-in-r
 
 
 # ivan <- read_excel("red/weather.xlsx", sheet = 1)
@@ -111,24 +114,26 @@ plotPredy(data  = ivanN,
           y     = yield,
           model = model_ivanN,
           # main  = "Ivanovice",
-          xlab  = expression("N dose ( kg "~ha^-1~")"),
-          ylab  = expression("Grain Yield ( t "~ha^-1~")"),
+          xlab  = expression("N dose [ kg "~ha^'-1'~"]"),
+          ylab  = expression("Grain Yield [ t "~ha^'-1'~"]"),
           xaxt  = "n",
           cex   = .9, # velikost bodu
           cex.lab= 1.5, # velikost popisku osy
           cex.axis=1.4, # velikost tick mark popisku
           cex.main=1.5,
-          family = "Times New Roman")
-title("Ivanovice", adj = 0, line = 1, cex.main = 1.3, family = "Times New Roman")
+          family = "A")
+title("Ivanovice", adj = 0, line = 1, cex.main = 1.3, family = "A")
 # axis(1, at = seq(0, 220, by = 10), las=2)
 axis(1, at = ivanN$dose, labels = ivanN$dose, 
-     las = 1, cex.axis = 1.3, family = "Times New Roman")
+     las = 1, cex.axis = 1.3, family = "A")
 #text(40,33, "y = 17.4037+0.0639(x-122.2971)", col = "blue", cex=0.9)
-mtext("y = 4.593+0.106(x-30.934)", side = 3, line = 1,                # data fetched from model summary
-      outer = FALSE, cex = 1.5, col = "blue", family = "Times New Roman")
+mtext("y = 4.593+0.106[x−30.934]", side = 3, line = 1,                # data fetched from model summary
+      outer = FALSE, cex = 1.5, col = "blue", family = "A")
 
+# dev.copy(device = png, filename = 'plots/ivanovice_n.png', 
+#          width = 600, height = 400) 
 dev.copy(device = png, filename = 'plots/ivanovice_n.png', 
-         width = 600, height = 400) 
+         width = 1600, height = 1000, res=200) 
 dev.off()
 
 # Caslav
@@ -155,24 +160,24 @@ plotPredy(data  = caslN,
           y     = yield,
           model = model_caslN,
           # main  = "Caslav",
-          xlab  = expression("N dose ( kg "~ha^-1~")"),
-          ylab  = expression("Grain Yield ( t "~ha^-1~")"),
+          xlab  = expression("N dose [ kg "~ha^'-1'~"]"),
+          ylab  = expression("Grain Yield [ t "~ha^'-1'~"]"),
           xaxt  = "n",
           cex   = .9, # velikost bodu
           cex.lab= 1.5, # velikost popisku osy
           cex.axis=1.4, # velikost tick mark popisku
           cex.main=1.5,
-          family = "Times New Roman")
-title("Caslav", adj = 0, line = 1, cex.main = 1.3, family = "Times New Roman")
+          family = "A")
+title("Caslav", adj = 0, line = 1, cex.main = 1.3, family = "A")
 # axis(1, at = seq(0, 220, by = 10), las=2)
 axis(1, at = caslN$dose, labels = caslN$dose, 
-     las = 1, cex.axis = 1.3, family = "Times New Roman")
+     las = 1, cex.axis = 1.3, family = "A")
 #text(40,33, "y = 17.4037+0.0639(x-122.2971)", col = "blue", cex=0.9)
-mtext("y = 4.210+0.077(x-32.034)", side = 3, line = 1,
-      outer = FALSE, cex = 1.5, col = "blue", family = "Times New Roman")
+mtext("y = 4.210+0.077[x-32.034]", side = 3, line = 1,
+      outer = FALSE, cex = 1.5, col = "blue", family = "A")
 
 dev.copy(device = png, filename = 'plots/caslav_n.png', 
-         width = 600, height = 400) 
+         width = 1600, height = 1000, res=200)
 dev.off()
 
 # Lukavec
@@ -200,24 +205,24 @@ plotPredy(data  = lukaN,
           y     = yield,
           model = model_lukaN,
           #main  = "Lukavec",
-          xlab  = expression("N dose ( kg "~ha^-1~")"),
-          ylab  = expression("Grain Yield ( t "~ha^-1~")"),
+          xlab  = expression("N dose [ kg "~ha^'-1'~"]"),
+          ylab  = expression("Grain Yield [ t "~ha^'-1'~"]"),
           xaxt  = "n",
           cex   = .9, # velikost bodu
           cex.lab= 1.5, # velikost popisku osy
           cex.axis=1.4, # velikost tick mark popisku
           cex.main=1.5,
-          family = "Times New Roman")
-title("Lukavec", adj = 0, line = 1, cex.main = 1.3, family = "Times New Roman")
+          family = "A")
+title("Lukavec", adj = 0, line = 1, cex.main = 1.3, family = "A")
 # axis(1, at = seq(0, 220, by = 10), las=2)
 axis(1, at = lukaN$dose, labels = lukaN$dose, 
-     las = 1, cex.axis = 1.3, family = "Times New Roman")
+     las = 1, cex.axis = 1.3, family = "A")
 #text(40,33, "y = 17.4037+0.0639(x-122.2971)", col = "blue", cex=0.9)
-mtext("y = 2.495+0.074(x-45.600)", side = 3, line = 1,
-      outer = FALSE, cex = 1.5, col = "blue", family = "Times New Roman")
+mtext("y = 2.495+0.074[x-45.600]", side = 3, line = 1,
+      outer = FALSE, cex = 1.5, col = "blue", family = "A")
 
 dev.copy(device = png, filename = 'plots/lukavec_n.png', 
-         width = 600, height = 400) 
+         width = 1600, height = 1000, res=200)
 dev.off()
 
 # ================ END OF THE MAIN ANALYSIS ===============================
@@ -247,8 +252,8 @@ plotPredy(data  = alfa,
           y     = gyield,
           model = model_alfag_rand,
           main  = "",
-          xlab  = expression("N dose ( kg "~ha^-1~")"),
-          ylab  = expression("Grain Yield ( t "~ha^-1~")"),
+          xlab  = expression("N dose ( kg "~ha^'-1'~")"),
+          ylab  = expression("Grain Yield ( t "~ha^'-1'~")"),
           xaxt  = "n",
           cex   = .9, # velikost bodu
           cex.lab= 1.5, # velikost popisku osy
@@ -295,21 +300,21 @@ plotPredy(data  = ivanNPK,
           y     = yield,
           model = lp_model,
           # main  = "Ivanovice",
-          xlab  = expression("N dose (NPK) ( kg "~ha^-1~")"),
-          ylab  = expression("Grain Yield ( t "~ha^-1~")"),
+          xlab  = expression("N dose (NPK) ( kg "~ha^'-1'~")"),
+          ylab  = expression("Grain Yield ( t "~ha^'-1'~")"),
           xaxt  = "n",
           cex   = .9, # velikost bodu
           cex.lab= 1.5, # velikost popisku osy
           cex.axis=1.4, # velikost tick mark popisku
           cex.main=1.5,
-          family = "Times New Roman")
-title("Ivanovice", adj = 0, line = 1, cex.main = 1.3, family = "Times New Roman")
+          family = "A")
+title("Ivanovice", adj = 0, line = 1, cex.main = 1.3, family = "A")
 # axis(1, at = seq(0, 220, by = 10), las=2)
 axis(1, at = ivanNPK$dose, labels = ivanNPK$dose, 
-     las = 1, cex.axis = 1.3, family = "Times New Roman")
+     las = 1, cex.axis = 1.3, family = "A")
 #text(40,33, "y = 17.4037+0.0639(x-122.2971)", col = "blue", cex=0.9)
 mtext("y = 5.111+0.035(x-46.594)", side = 3, line = 1,                # data fetched from model summary
-      outer = FALSE, cex = 1.5, col = "blue", family = "Times New Roman")
+      outer = FALSE, cex = 1.5, col = "blue", family = "A")
 
 dev.copy(device = png, filename = 'plots/ivanovice_npk.png', 
          width = 600, height = 400) 
